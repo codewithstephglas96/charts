@@ -1982,7 +1982,7 @@
                                       textColor = "#000";
                                   }
                                   
-                                  html += `<div style="width:18px; height:18px; line-height:18px; border-radius:50%; background:${bgColor}; color:${textColor}; font-weight:bold; font-size:12px; margin:auto;">${displayVal}</div>`;
+                                  html += `<div style="width:18px; height:18px; line-height:18px; border-radius:50%; background:${bgColor}; color:${textColor}; font-weight:bold; font-size:11px; margin:auto;">${displayVal}</div>`;
                               } else {
                                   // Pick 2 and Pick 4 - check if this draw should be highlighted
                                   const matchKey = `${wkIdx}-${dayName}-${slot}`;
@@ -1990,7 +1990,7 @@
                                       bgColor = highlightMap.get(matchKey);
                                       textColor = "#000";
                                       fontWeight = "bold";
-                                      html += `<span style="background:${bgColor}; color:${textColor}; font-weight:${fontWeight}; font-size:12px; padding:2px 4px; border-radius:4px;">${displayVal}</span>`;
+                                      html += `<span style="background:${bgColor}; color:${textColor}; font-weight:${fontWeight}; font-size:11px; padding:2px 4px; border-radius:4px;">${displayVal}</span>`;
                                   } else {
                                       // Non-highlighted draws
                                       if (isCurrent) {
