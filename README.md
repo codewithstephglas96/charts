@@ -1,0 +1,2 @@
+# charts
+PLAY WHE, PICK 2, PICK 4 DAILY CHARTS. 
