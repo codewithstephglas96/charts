@@ -572,7 +572,7 @@
           color: white;
           font-size: 20px;
           font-weight: 800;
-          background: inherit;
+          background: red;
           top: 50%;
           transform: translateY(-50%);
       }
@@ -586,7 +586,7 @@
           color: white;
           font-size: 20px;
           font-weight: 800;
-          background: inherit;
+          background: red;
           top: 50%;
           transform: translateY(-50%);
       }
@@ -600,7 +600,7 @@
           color: white;
           font-size: 20px;
           font-weight: 800;
-          background: inherit;
+          background: red;
           top: 50%;
           transform: translateY(-50%);
       }
@@ -1677,7 +1677,7 @@
           c.bg +
           "; color:" +
           c.txt +
-          '; font-size:13px; font-weight:600; text-align:center; display:inline-block; box-shadow:0 2px 4px rgba(0,0,0,0.3); margin-right:4px;">' +
+          '; font-size:12px; font-weight:600; text-align:center; display:inline-block; box-shadow:0 2px 4px rgba(0,0,0,0.3); margin-right:4px;">' +
           mk +
           "</span>"
         );
@@ -1979,7 +1979,7 @@
                                       textColor = "#000";
                                   }
                                   
-                                  html += `<div style="width:18px; height:18px; line-height:18px; border-radius:50%; background:${bgColor}; color:${textColor}; font-weight:bold; font-size:14px; margin:auto;">${displayVal}</div>`;
+                                  html += `<div style="width:18px; height:18px; line-height:18px; border-radius:50%; background:${bgColor}; color:${textColor}; font-weight:bold; font-size:12px; margin:auto;">${displayVal}</div>`;
                               } else {
                                   // Pick 2 and Pick 4 - check if this draw should be highlighted
                                   const matchKey = `${wkIdx}-${dayName}-${slot}`;
@@ -1987,15 +1987,15 @@
                                       bgColor = highlightMap.get(matchKey);
                                       textColor = "#000";
                                       fontWeight = "bold";
-                                      html += `<span style="background:${bgColor}; color:${textColor}; font-weight:${fontWeight}; font-size:14px; padding:2px 4px; border-radius:4px;">${displayVal}</span>`;
+                                      html += `<span style="background:${bgColor}; color:${textColor}; font-weight:${fontWeight}; font-size:12px; padding:2px 4px; border-radius:4px;">${displayVal}</span>`;
                                   } else {
                                       // Non-highlighted draws
                                       if (isCurrent) {
                                           // Current week non-highlighted draws
-                                          html += `<span style="color:#000;font-size:14px;">${displayVal}</span>`;
+                                          html += `<span style="color:#000;font-size:11px;">${displayVal}</span>`;
                                       } else {
                                           // Previous weeks non-highlighted draws
-                                          html += `<span style="color:#000;font-size:14px;">${displayVal}</span>`;
+                                          html += `<span style="color:#000;font-size:11px;">${displayVal}</span>`;
                                       }
                                   }
                               }
