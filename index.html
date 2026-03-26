@@ -1720,15 +1720,13 @@
           NON: { hour: 16, minute: 0 },
           EVE: { hour: 19, minute: 0 },
         };
-
+      
         const drawTime = new Date(now);
         drawTime.setHours(times[slot].hour, times[slot].minute, 0, 0);
-
-        // If draw time has passed for today, it's for tomorrow
-        if (drawTime < now) {
-          drawTime.setDate(drawTime.getDate() + 1);
-        }
-
+        
+        // Don't automatically add a day - let the calling code handle it
+        // This way, if draw time has passed, it returns a past time
+        
         return drawTime;
       }
 
