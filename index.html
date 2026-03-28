@@ -2036,10 +2036,9 @@
           let highlightMap = new Map(); // Maps combination keys to colors
 
           if (game === 'pw') {
-              // Play Whe - Sliding highlight logic from original code
               let currentDayIndex = -1, currentDayName = "", currentSlot = "";
               
-              // Find current position (last completed draw)
+              // 1. Identify current position in Current Week
               for (let d = dayNames.length - 1; d >= 0; d--) {
                   const day = currentWk.days.find(dy => dy.dayName === dayNames[d]);
                   if (day) {
@@ -2054,46 +2053,57 @@
                   }
                   if (currentDayIndex !== -1) break;
               }
-
+          
+              // 2. NEW DEEP SEARCH HELPER
+              // This looks at a specific day/slot. If it's a holiday, it looks at that SAME day/slot 
+              // in the week BEFORE that, and so on.
+              const findDeepDraw = (dayIdx, targetSlot) => {
+                  const targetDayName = dayNames[dayIdx];
+                  // Start from the week before current (weeks.length - 2)
+                  for (let w = weeks.length - 2; w >= 0; w--) {
+                      const val = getDraw(weeks[w], targetDayName, targetSlot);
+                      // If we find a real number (not null, not Holiday, not -), return it
+                      if (val && val !== "HOLIDAY" && val !== "-" && val !== "PENDING") {
+                          return val;
+                      }
+                  }
+                  return null;
+              };
+          
               let highlightA = []; 
               let highlightB = []; 
-
-              // Apply Play Whe slot-based highlights
-              if (currentDayIndex === -1) {
-                  // Fallback: Check last week's end
-                  for (let d = dayNames.length - 1; d >= 0; d--) {
-                      const eveDraw = getDraw(lastWk, dayNames[d], "EVE");
-                      if (eveDraw) { highlightB = [eveDraw]; break; }
-                  }
-                  const mondayMor = getDraw(currentWk, "Monday", "MOR");
-                  if (mondayMor) highlightA = [mondayMor];
-              } else {
+          
+              if (currentDayIndex !== -1) {
                   if (currentSlot === "MOR") {
-                      highlightA = [getDraw(currentWk, currentDayName, "MOR")].filter(Boolean);
-                      highlightB = [getDraw(lastWk, currentDayName, "MID")].filter(Boolean);
-                  } else if (currentSlot === "MID") {
-                      highlightA = [getDraw(currentWk, currentDayName, "MID")].filter(Boolean);
-                      highlightB = [getDraw(lastWk, currentDayName, "NON")].filter(Boolean);
-                  } else if (currentSlot === "NON") {
-                      highlightA = [getDraw(currentWk, currentDayName, "NON")].filter(Boolean);
-                      highlightB = [getDraw(lastWk, currentDayName, "EVE")].filter(Boolean);
-                  } else if (currentSlot === "EVE") {
-                      if (currentDayIndex === 6) { // Saturday
-                          const satNon = getDraw(currentWk, "Saturday", "NON");
-                          const satEve = getDraw(currentWk, "Saturday", "EVE");
-                          const sunMorCur = getDraw(currentWk, "Sunday", "MOR");
-                          const sunMidCur = getDraw(currentWk, "Sunday", "MID");
-                          highlightA = [satNon, satEve, sunMorCur, sunMidCur].filter(Boolean);
-                          highlightB = [];
-                      } else {
-                          const nextDay = dayNames[currentDayIndex + 1];
-                          highlightA = [getDraw(currentWk, currentDayName, "NON"), getDraw(currentWk, currentDayName, "EVE")].filter(Boolean);
-                          highlightB = [getDraw(lastWk, nextDay, "MOR"), getDraw(lastWk, nextDay, "MID")].filter(Boolean);
+                      highlightA = [getDraw(currentWk, currentDayName, "MOR")];
+                      highlightB = [findDeepDraw(currentDayIndex, "MID")];
+                  } 
+                  else if (currentSlot === "MID") {
+                      highlightA = [getDraw(currentWk, currentDayName, "MID")];
+                      highlightB = [findDeepDraw(currentDayIndex, "NON")];
+                  } 
+                  else if (currentSlot === "NON") {
+                      highlightA = [getDraw(currentWk, currentDayName, "NON")];
+                      highlightB = [findDeepDraw(currentDayIndex, "EVE")];
+                  } 
+                  else if (currentSlot === "EVE") {
+                      highlightA = [
+                          getDraw(currentWk, currentDayName, "NON"), 
+                          getDraw(currentWk, currentDayName, "EVE")
+                      ];
+                      
+                      // Logic for the "Next Day" Morning/Midday
+                      if (currentDayIndex < 6) {
+                          const nextDayIdx = currentDayIndex + 1;
+                          highlightB = [
+                              findDeepDraw(nextDayIdx, "MOR"),
+                              findDeepDraw(nextDayIdx, "MID")
+                          ];
                       }
                   }
               }
-
-              activeHighlights = [...new Set([...highlightA, ...highlightB])];
+          
+              activeHighlights = [...new Set([...highlightA, ...highlightB].filter(Boolean))];
               
               // Active colors mapping for Play Whe
               highlightColors = {
