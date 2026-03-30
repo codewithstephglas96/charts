@@ -2158,7 +2158,7 @@ function startCountdownTimers() {
       }
 
       // 4. 1/8 Chart - Updated with Active Highlights
-      function renderOneEightChart(currentWeekDraws, activeHighlights) {
+function renderOneEightChart(currentWeekDraws, activeHighlights) {
     const oneEightData = [
         [1, 9, 17, 25, 33], [2, 10, 18, 26, 34], [3, 11, 19, 27, 35],
         [4, 12, 20, 28, 36], [5, 13, 21, 29], [6, 14, 22, 30],
@@ -2171,27 +2171,25 @@ function startCountdownTimers() {
             <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
                 <tr>`;
 
-    oneEightData.forEach(group => {
+    oneEightData.forEach(column => {
         html += `<td style="border: 1px solid #ddd; width: 12.5%; vertical-align: top; padding: 0;">`;
         
-        group.forEach((num) => {
+        column.forEach((num) => {
             const numStr = num.toString();
             const isActive = activeHighlights.includes(numStr);
             const isHit = currentWeekDraws.includes(num);
             
-            let cellStyle = "padding: 8px 4px; border-bottom: 1px solid #eee; min-height: 35px;";
+            // This preserves your original vertical stacking
+            let cellStyle = "padding: 8px 0; border-bottom: 1px solid #eee; height: 35px; line-height: 35px;";
             
             if (isActive) {
-                // Priority highlight for active numbers anywhere in the column
-                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; border: 1px solid #333;";
+                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; outline: 1px solid #333;";
             } else if (isHit) {
-                // Secondary highlight for weekly hits
                 cellStyle += "background: #f2f2f2; font-weight: bold; color: #824b8d;";
             }
 
             html += `<div style="${cellStyle}">${num}</div>`;
         });
-
         html += `</td>`;
     });
 
@@ -2201,10 +2199,8 @@ function startCountdownTimers() {
       // 5. 1/16 Chart - Updated with Active Highlights
 function renderOneSixteenChart(currentWeekDraws, activeHighlights) {
     const oneSixteenData = [
-        [1, 17, 33], [2, 18, 34], [3, 19, 35], [4, 20, 36],
-        [5, 21], [6, 22], [7, 23], [8, 24],
-        [9, 25], [10, 26], [11, 27], [12, 28],
-        [13, 29], [14, 30], [15, 31], [16, 32]
+        [1, 17, 33], [2, 18, 34], [3, 19, 35], [4, 20, 36], [5, 21], [6, 22], [7, 23], [8, 24],
+        [9, 25], [10, 26], [11, 27], [12, 28], [13, 29], [14, 30], [15, 31], [16, 32]
     ];
 
     let html = `
@@ -2213,33 +2209,33 @@ function renderOneSixteenChart(currentWeekDraws, activeHighlights) {
             <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 11px;">
                 <tr>`;
 
-    oneSixteenData.forEach((group, idx) => {
-        // Create a new row every 8 cells to keep it mobile-friendly
+    oneSixteenData.forEach((column, idx) => {
+        // Keeps the 8-column break for the 1/16 layout
         if (idx > 0 && idx % 8 === 0) html += `</tr><tr>`;
 
         html += `<td style="border: 1px solid #ddd; width: 12.5%; vertical-align: top; padding: 0;">`;
         
-        group.forEach((num) => {
+        column.forEach((num) => {
             const numStr = num.toString();
             const isActive = activeHighlights.includes(numStr);
             const isHit = currentWeekDraws.includes(num);
             
-            let cellStyle = "padding: 6px 2px; border-bottom: 1px solid #eee; min-height: 30px;";
+            let cellStyle = "padding: 6px 0; border-bottom: 1px solid #eee; height: 30px; line-height: 30px;";
             
             if (isActive) {
-                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; border: 1px solid #333;";
+                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; outline: 1px solid #333;";
             } else if (isHit) {
                 cellStyle += "background: #f2f2f2; font-weight: bold; color: #824b8d;";
             }
 
             html += `<div style="${cellStyle}">${num}</div>`;
         });
-
         html += `</td>`;
     });
 
     return html + `</tr></table></div>`;
 }
+
 
 
       // 6. Sunny Side Up - Cleaned version using only dynamic highlights
