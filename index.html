@@ -2158,76 +2158,89 @@ function startCountdownTimers() {
       }
 
       // 4. 1/8 Chart - Updated with Active Highlights
-      function renderOneEightChart(currentWeekDraws, activeHighlights, highlightColors) {
-          const oneEightData = [
-              [1, 8, 25], [2, 9, 26], [3, 10, 27], [4, 11, 28], [5, 12, 29], [6, 13, 30],
-              [7, 14, 31], [8, 15, 32], [9, 16, 33], [10, 17, 34], [11, 18, 35], [12, 19, 36],
-              [13, 20, 1], [14, 21, 2], [15, 22, 3], [16, 23, 4], [17, 24, 5], [18, 25, 6],
-              [19, 26, 7], [20, 27, 8], [21, 28, 9], [22, 29, 10], [23, 30, 11], [24, 31, 12],
-              [25, 32, 13], [26, 33, 14], [27, 34, 15], [28, 35, 16], [29, 36, 17], [30, 1, 18],
-              [31, 2, 19], [32, 3, 20], [33, 4, 21], [34, 5, 22], [35, 6, 23], [36, 7, 24]
-          ];
+      function renderOneEightChart(currentWeekDraws, activeHighlights) {
+    const oneEightData = [
+        [1, 9, 17, 25, 33], [2, 10, 18, 26, 34], [3, 11, 19, 27, 35],
+        [4, 12, 20, 28, 36], [5, 13, 21, 29], [6, 14, 22, 30],
+        [7, 15, 23, 31], [8, 16, 24, 32]
+    ];
 
-          let html = `<div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; padding: 10px;">
-                      <div style="background: #4472c4; color: white; padding: 5px; text-align: center; font-weight: bold; margin-bottom: 10px;">1/8 CHART</div>
-                      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; border: 1px solid #999;">`;
+    let html = `
+        <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; margin-top: 10px;">
+            <div style="background: #824b8d; color: white; padding: 6px; text-align: center; font-weight: bold; font-size: 13px;">1/8 CHART</div>
+            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
+                <tr>`;
 
-          oneEightData.forEach(item => {
-              const [main, p1, p2] = item;
-              const mainStr = main.toString();
-              const isActive = activeHighlights.includes(mainStr);
-              const isHit = currentWeekDraws.includes(main);
-              
-              let mainStyle = "";
-              if (isActive) mainStyle = `background: ${highlightColors[mainStr]}; color: #000; outline: 1px solid #333;`;
-              else if (isHit) mainStyle = "background:#824b8d; color:#fff;";
+    oneEightData.forEach(group => {
+        html += `<td style="border: 1px solid #ddd; width: 12.5%; vertical-align: top; padding: 0;">`;
+        
+        group.forEach((num) => {
+            const numStr = num.toString();
+            const isActive = activeHighlights.includes(numStr);
+            const isHit = currentWeekDraws.includes(num);
+            
+            let cellStyle = "padding: 8px 4px; border-bottom: 1px solid #eee; min-height: 35px;";
+            
+            if (isActive) {
+                // Priority highlight for active numbers anywhere in the column
+                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; border: 1px solid #333;";
+            } else if (isHit) {
+                // Secondary highlight for weekly hits
+                cellStyle += "background: #f2f2f2; font-weight: bold; color: #824b8d;";
+            }
 
-              html += `<div style="border: 1px solid #999; text-align: center; background: #fff; font-size: 12px;">
-                          <div style="padding: 4px; border-bottom: 1px solid #999; font-weight: bold; ${mainStyle}">${main}</div>
-                          <div style="display: flex;">
-                              <div style="flex: 1; padding: 4px; border-right: 1px solid #999;">${p1}</div>
-                              <div style="flex: 1; padding: 4px;">${p2}</div>
-                          </div>
-                      </div>`;
-          });
-          return html + `</div></div>`;
-      }
+            html += `<div style="${cellStyle}">${num}</div>`;
+        });
+
+        html += `</td>`;
+    });
+
+    return html + `</tr></table></div>`;
+}
 
       // 5. 1/16 Chart - Updated with Active Highlights
-      function renderOneSixteenChart(currentWeekDraws, activeHighlights, highlightColors) {
-          const sixteenGroups = [
-              [1, 16, 29], [2, 17, 30], [3, 18, 31], [4, 19, 32], [5, 20, 33], [6, 21, 34],
-              [7, 22, 35], [8, 23, 36], [9, 24, 1], [10, 25, 2], [11, 26, 3], [12, 27, 4],
-              [13, 28, 5], [14, 29, 6], [15, 30, 7], [16, 31, 8], [17, 32, 9], [18, 33, 10],
-              [19, 34, 11], [20, 35, 12], [21, 36, 13], [22, 1, 14], [23, 2, 15], [24, 3, 16],
-              [25, 4, 17], [26, 5, 18], [27, 6, 19], [28, 7, 20], [29, 8, 21], [30, 9, 22],
-              [31, 10, 23], [32, 11, 24], [33, 12, 25], [34, 13, 26], [35, 14, 27], [36, 15, 28]
-          ];
+function renderOneSixteenChart(currentWeekDraws, activeHighlights) {
+    const oneSixteenData = [
+        [1, 17, 33], [2, 18, 34], [3, 19, 35], [4, 20, 36],
+        [5, 21], [6, 22], [7, 23], [8, 24],
+        [9, 25], [10, 26], [11, 27], [12, 28],
+        [13, 29], [14, 30], [15, 31], [16, 32]
+    ];
 
-          let html = `<div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; padding: 10px;">
-                      <div style="background: #4472c4; color: white; padding: 5px; text-align: center; font-weight: bold; margin-bottom: 10px;">1/16 CHART</div>
-                      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; border: 1px solid #999;">`;
+    let html = `
+        <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; margin-top: 10px;">
+            <div style="background: #824b8d; color: white; padding: 6px; text-align: center; font-weight: bold; font-size: 13px;">1/16 CHART</div>
+            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 11px;">
+                <tr>`;
 
-          sixteenGroups.forEach(group => {
-              const [main, p1, p2] = group;
-              const mainStr = main.toString();
-              const isActive = activeHighlights.includes(mainStr);
-              const isHit = currentWeekDraws.includes(main);
+    oneSixteenData.forEach((group, idx) => {
+        // Create a new row every 8 cells to keep it mobile-friendly
+        if (idx > 0 && idx % 8 === 0) html += `</tr><tr>`;
 
-              let mainStyle = "";
-              if (isActive) mainStyle = `background: ${highlightColors[mainStr]}; color: #000; outline: 1px solid #333;`;
-              else if (isHit) mainStyle = "background:#824b8d; color:#fff;";
+        html += `<td style="border: 1px solid #ddd; width: 12.5%; vertical-align: top; padding: 0;">`;
+        
+        group.forEach((num) => {
+            const numStr = num.toString();
+            const isActive = activeHighlights.includes(numStr);
+            const isHit = currentWeekDraws.includes(num);
+            
+            let cellStyle = "padding: 6px 2px; border-bottom: 1px solid #eee; min-height: 30px;";
+            
+            if (isActive) {
+                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; border: 1px solid #333;";
+            } else if (isHit) {
+                cellStyle += "background: #f2f2f2; font-weight: bold; color: #824b8d;";
+            }
 
-              html += `<div style="border: 1px solid #999; text-align: center; background: #fff; font-size: 12px;">
-                          <div style="padding: 4px; border-bottom: 1px solid #999; font-weight: bold; ${mainStyle}">${main}</div>
-                          <div style="display: flex;">
-                              <div style="flex: 1; padding: 4px; border-right: 1px solid #999;">${p1}</div>
-                              <div style="flex: 1; padding: 4px;">${p2}</div>
-                          </div>
-                      </div>`;
-          });
-          return html + `</div></div>`;
-      }
+            html += `<div style="${cellStyle}">${num}</div>`;
+        });
+
+        html += `</td>`;
+    });
+
+    return html + `</tr></table></div>`;
+}
+
 
       // 6. Sunny Side Up - Cleaned version using only dynamic highlights
       function renderSunnySideUpChart(currentWeekDraws, activeHighlights, highlightColors) {
