@@ -2055,7 +2055,7 @@ function startCountdownTimers() {
                   lastDate = formatted.replace(/(\d{2})(\d{2})$/, "'$2");
               }
               
-              if (days > 7) shelfMarks.push({ num: n, lastDate, days });
+              if (days > 10) shelfMarks.push({ num: n, lastDate, days });
           }
           shelfMarks.sort((a, b) => b.days - a.days);
 
