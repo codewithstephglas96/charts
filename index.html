@@ -661,7 +661,7 @@
       }
 
       .subscribe-modal-header {
-          padding: 20px;
+          padding: 10px;
           border-bottom: 1px solid #334155;
           display: flex;
           justify-content: space-between;
@@ -693,14 +693,14 @@
 
       .subscribe-benefits h3 {
           color: #fff;
-          margin-bottom: 15px;
+          margin-bottom: 7px;
           font-size: 18px;
       }
 
       .subscribe-benefits ul {
           list-style: none;
           padding: 0;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
       }
 
       .subscribe-benefits li {
@@ -709,7 +709,7 @@
           font-size: 14px;
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 6px;
       }
 
       .subscribe-benefits li::before {
@@ -721,8 +721,8 @@
 
       .subscribe-price {
           text-align: center;
-          margin: 20px 0;
-          padding: 15px;
+          margin: 10px 0;
+          padding: 7px;
           background: #0f172a;
           border-radius: 12px;
           border: 1px solid #334155;
@@ -750,7 +750,7 @@
           background: linear-gradient(135deg, #ff9d00, #ff6b00);
           color: #000;
           border: none;
-          padding: 12px;
+          padding: 6px;
           border-radius: 10px;
           font-weight: 800;
           font-size: 16px;
@@ -768,7 +768,7 @@
           background: #334155;
           color: #fff;
           border: none;
-          padding: 12px;
+          padding: 6px;
           border-radius: 10px;
           font-weight: 600;
           cursor: pointer;
@@ -1202,7 +1202,7 @@
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 
     <script>
       // ========== CONSTANTS ==========
@@ -1743,65 +1743,65 @@
         }
       }
 
-function startCountdownTimers() {
-  // Clear any existing timer intervals first
-  if (window.countdownInterval) {
-    clearInterval(window.countdownInterval);
-  }
-
-  // Update all countdowns every second
-  window.countdownInterval = setInterval(() => {
-    if (!window.countdownTimers || window.countdownTimers.length === 0) {
-      return;
-    }
-
-    const now = Date.now();
-    const activeTimers = [];
-
-    window.countdownTimers.forEach(timer => {
-      const element = document.getElementById(timer.id);
-      if (!element) return;
-
-      const timeDiff = timer.drawTime - now;
-      
-      if (timeDiff > 0) {
-        // Still active - update display
-        const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-        
-        element.textContent = `${hours.toString().padStart(2, '0')}h:${minutes.toString().padStart(2, '0')}m:${seconds.toString().padStart(2, '0')}s`;
-        
-        // Add urgent styling if less than 10 minutes
-        if (timeDiff < 10 * 60 * 1000) {
-          element.style.color = "#ff4444";
-          element.style.animation = "pulse 1s infinite";
-        } else {
-          element.style.color = "#ffa500";
-          element.style.animation = "none";
+      function startCountdownTimers() {
+        // Clear any existing timer intervals first
+        if (window.countdownInterval) {
+          clearInterval(window.countdownInterval);
         }
-        
-        activeTimers.push(timer);
-      } else {
-        // Timer expired - replace with STANDBY
-        const parentTd = element.closest("td");
-        if (parentTd) {
-          parentTd.innerHTML = 'STANDBY<br><span class="pending-hourglass">⏳</span>';
-        }
-        // Don't add to activeTimers - this timer is dead
+
+        // Update all countdowns every second
+        window.countdownInterval = setInterval(() => {
+          if (!window.countdownTimers || window.countdownTimers.length === 0) {
+            return;
+          }
+
+          const now = Date.now();
+          const activeTimers = [];
+
+          window.countdownTimers.forEach(timer => {
+            const element = document.getElementById(timer.id);
+            if (!element) return;
+
+            const timeDiff = timer.drawTime - now;
+            
+            if (timeDiff > 0) {
+              // Still active - update display
+              const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+              const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+              
+              element.textContent = `${hours.toString().padStart(2, '0')}h:${minutes.toString().padStart(2, '0')}m:${seconds.toString().padStart(2, '0')}s`;
+              
+              // Add urgent styling if less than 10 minutes
+              if (timeDiff < 10 * 60 * 1000) {
+                element.style.color = "#ff4444";
+                element.style.animation = "pulse 1s infinite";
+              } else {
+                element.style.color = "#ffa500";
+                element.style.animation = "none";
+              }
+              
+              activeTimers.push(timer);
+            } else {
+              // Timer expired - replace with STANDBY
+              const parentTd = element.closest("td");
+              if (parentTd) {
+                parentTd.innerHTML = 'STANDBY<br><span class="pending-hourglass">⏳</span>';
+              }
+              // Don't add to activeTimers - this timer is dead
+            }
+          });
+
+          // Update the global timers array with only active ones
+          window.countdownTimers = activeTimers;
+          
+          // Clear interval if no timers left
+          if (activeTimers.length === 0 && window.countdownInterval) {
+            clearInterval(window.countdownInterval);
+            window.countdownInterval = null;
+          }
+        }, 1000);
       }
-    });
-
-    // Update the global timers array with only active ones
-    window.countdownTimers = activeTimers;
-    
-    // Clear interval if no timers left
-    if (activeTimers.length === 0 && window.countdownInterval) {
-      clearInterval(window.countdownInterval);
-      window.countdownInterval = null;
-    }
-  }, 1000);
-}
 
       function showError(game) {
         let tbodyId;
@@ -2158,92 +2158,91 @@ function startCountdownTimers() {
       }
 
       // 4. 1/8 Chart - Updated with Active Highlights
-function renderOneEightChart(currentWeekDraws, activeHighlights) {
-    const oneEightData = [
-        [1, 8, 25], [2, 9, 26], [3, 10, 27], [4, 11, 28], [5, 12, 29], [6, 13, 30],
-        [7, 14, 31], [8, 15, 32], [9, 16, 33], [10, 17, 34], [11, 18, 35], [12, 19, 36],
-        [13, 20, 1], [14, 21, 2], [15, 22, 3], [16, 23, 4], [17, 24, 5], [18, 25, 6],
-        [19, 26, 7], [20, 27, 8], [21, 28, 9], [22, 29, 10], [23, 30, 11], [24, 31, 12],
-        [25, 32, 13], [26, 33, 14], [27, 34, 15], [28, 35, 16], [29, 36, 17], [30, 1, 18],
-        [31, 2, 19], [32, 3, 20], [33, 4, 21], [34, 5, 22], [35, 6, 23], [36, 7, 24]
-    ];
+      function renderOneEightChart(currentWeekDraws, activeHighlights, highlightColors) {
+          const oneEightData = [
+              [1, 8, 25], [2, 9, 26], [3, 10, 27], [4, 11, 28], [5, 12, 29], [6, 13, 30],
+              [7, 14, 31], [8, 15, 32], [9, 16, 33], [10, 17, 34], [11, 18, 35], [12, 19, 36],
+              [13, 20, 1], [14, 21, 2], [15, 22, 3], [16, 23, 4], [17, 24, 5], [18, 25, 6],
+              [19, 26, 7], [20, 27, 8], [21, 28, 9], [22, 29, 10], [23, 30, 11], [24, 31, 12],
+              [25, 32, 13], [26, 33, 14], [27, 34, 15], [28, 35, 16], [29, 36, 17], [30, 1, 18],
+              [31, 2, 19], [32, 3, 20], [33, 4, 21], [34, 5, 22], [35, 6, 23], [36, 7, 24]
+          ];
 
-    let html = `
-        <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; margin-top: 10px;">
-            <div style="background: #824b8d; color: white; padding: 6px; text-align: center; font-weight: bold; font-size: 13px;">1/8 CHART</div>
-            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
-                <tr>`;
+          let html = `<div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; padding: 10px;">
+                      <div style="background: #4472c4; color: white; padding: 5px; text-align: center; font-weight: bold; margin-bottom: 10px;">1/8 CHART</div>
+                      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; border: 1px solid #999;">`;
 
-    oneEightData.forEach(column => {
-        html += `<td style="border: 1px solid #ddd; width: 12.5%; vertical-align: top; padding: 0;">`;
-        
-        column.forEach((num) => {
-            const numStr = num.toString();
-            const isActive = activeHighlights.includes(numStr);
-            const isHit = currentWeekDraws.includes(num);
-            
-            // This preserves your original vertical stacking
-            let cellStyle = "padding: 8px 0; border-bottom: 1px solid #eee; height: 35px; line-height: 35px;";
-            
-            if (isActive) {
-                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; outline: 1px solid #333;";
-            } else if (isHit) {
-                cellStyle += "background: #f2f2f2; font-weight: bold; color: #824b8d;";
-            }
+          oneEightData.forEach(item => {
+              const [main, p1, p2] = item;
+              const isHitMain = currentWeekDraws.includes(main);
 
-            html += `<div style="${cellStyle}">${num}</div>`;
-        });
-        html += `</td>`;
-    });
+              // Logic: If the number is in activeHighlights (from Deep Search), use brand color + gold border
+              const getStyle = (num, isMainCell) => {
+                  const numStr = num.toString();
+                  const isActive = activeHighlights.includes(numStr);
+                  const color = highlightColors[numStr] || "#ffffff";
+                  
+                  if (isActive) {
+                      return `background: ${color}; color: #000; outline: 2px solid #ff9f0a; z-index: 1; position: relative; font-weight: bold;`;
+                  } else if (isMainCell && isHitMain) {
+                      return `background: #824b8d; color: #fff; font-weight: bold;`;
+                  }
+                  return "";
+              };
 
-    return html + `</tr></table></div>`;
-}
+              html += `<div style="border: 1px solid #999; text-align: center; background: #fff; font-size: 12px;">
+                          <div style="padding: 4px; border-bottom: 1px solid #999; font-weight: bold; ${getStyle(main, true)}">${main}</div>
+                          <div style="display: flex;">
+                              <div style="flex: 1; padding: 4px; border-right: 1px solid #999; ${getStyle(p1, false)}">${p1}</div>
+                              <div style="flex: 1; padding: 4px; ${getStyle(p2, false)}">${p2}</div>
+                          </div>
+                      </div>`;
+          });
+          return html + `</div></div>`;
+      }
 
       // 5. 1/16 Chart - Updated with Active Highlights
-function renderOneSixteenChart(currentWeekDraws, activeHighlights) {
-    const sixteenGroups = [
-        [1, 16, 29], [2, 17, 30], [3, 18, 31], [4, 19, 32], [5, 20, 33], [6, 21, 34],
-        [7, 22, 35], [8, 23, 36], [9, 24, 1], [10, 25, 2], [11, 26, 3], [12, 27, 4],
-        [13, 28, 5], [14, 29, 6], [15, 30, 7], [16, 31, 8], [17, 32, 9], [18, 33, 10],
-        [19, 34, 11], [20, 35, 12], [21, 36, 13], [22, 1, 14], [23, 2, 15], [24, 3, 16],
-        [25, 4, 17], [26, 5, 18], [27, 6, 19], [28, 7, 20], [29, 8, 21], [30, 9, 22],
-        [31, 10, 23], [32, 11, 24], [33, 12, 25], [34, 13, 26], [35, 14, 27], [36, 15, 28]
-    ];
+      function renderOneSixteenChart(currentWeekDraws, activeHighlights, highlightColors) {
+          const sixteenGroups = [
+              [1, 16, 29], [2, 17, 30], [3, 18, 31], [4, 19, 32], [5, 20, 33], [6, 21, 34],
+              [7, 22, 35], [8, 23, 36], [9, 24, 1], [10, 25, 2], [11, 26, 3], [12, 27, 4],
+              [13, 28, 5], [14, 29, 6], [15, 30, 7], [16, 31, 8], [17, 32, 9], [18, 33, 10],
+              [19, 34, 11], [20, 35, 12], [21, 36, 13], [22, 1, 14], [23, 2, 15], [24, 3, 16],
+              [25, 4, 17], [26, 5, 18], [27, 6, 19], [28, 7, 20], [29, 8, 21], [30, 9, 22],
+              [31, 10, 23], [32, 11, 24], [33, 12, 25], [34, 13, 26], [35, 14, 27], [36, 15, 28]
+          ];
 
-    let html = `
-        <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; margin-top: 10px;">
-            <div style="background: #824b8d; color: white; padding: 6px; text-align: center; font-weight: bold; font-size: 13px;">1/16 CHART</div>
-            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 11px;">
-                <tr>`;
+          let html = `<div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif; padding: 10px;">
+                      <div style="background: #4472c4; color: white; padding: 5px; text-align: center; font-weight: bold; margin-bottom: 10px;">1/16 CHART</div>
+                      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; border: 1px solid #999;">`;
 
-    oneSixteenData.forEach((column, idx) => {
-        // Keeps the 8-column break for the 1/16 layout
-        if (idx > 0 && idx % 8 === 0) html += `</tr><tr>`;
+          sixteenGroups.forEach(group => {
+              const [main, p1, p2] = group;
+              const isHitMain = currentWeekDraws.includes(main);
 
-        html += `<td style="border: 1px solid #ddd; width: 12.5%; vertical-align: top; padding: 0;">`;
-        
-        column.forEach((num) => {
-            const numStr = num.toString();
-            const isActive = activeHighlights.includes(numStr);
-            const isHit = currentWeekDraws.includes(num);
-            
-            let cellStyle = "padding: 6px 0; border-bottom: 1px solid #eee; height: 30px; line-height: 30px;";
-            
-            if (isActive) {
-                cellStyle += "background: #ff9f0a; color: #000; font-weight: bold; outline: 1px solid #333;";
-            } else if (isHit) {
-                cellStyle += "background: #f2f2f2; font-weight: bold; color: #824b8d;";
-            }
+              const getStyle = (num, isMainCell) => {
+                  const numStr = num.toString();
+                  const isActive = activeHighlights.includes(numStr);
+                  const color = highlightColors[numStr] || "#ffffff";
+                  
+                  if (isActive) {
+                      return `background: ${color}; color: #000; outline: 2px solid #ff9f0a; z-index: 1; position: relative; font-weight: bold;`;
+                  } else if (isMainCell && isHitMain) {
+                      return `background: #824b8d; color: #fff; font-weight: bold;`;
+                  }
+                  return "";
+              };
 
-            html += `<div style="${cellStyle}">${num}</div>`;
-        });
-        html += `</td>`;
-    });
-
-    return html + `</tr></table></div>`;
-}
-
-
+              html += `<div style="border: 1px solid #999; text-align: center; background: #fff; font-size: 12px;">
+                          <div style="padding: 4px; border-bottom: 1px solid #999; font-weight: bold; ${getStyle(main, true)}">${main}</div>
+                          <div style="display: flex;">
+                              <div style="flex: 1; padding: 4px; border-right: 1px solid #999; ${getStyle(p1, false)}">${p1}</div>
+                              <div style="flex: 1; padding: 4px; ${getStyle(p2, false)}">${p2}</div>
+                          </div>
+                      </div>`;
+          });
+          return html + `</div></div>`;
+      }
 
       // 6. Sunny Side Up - Cleaned version using only dynamic highlights
       function renderSunnySideUpChart(currentWeekDraws, activeHighlights, highlightColors) {
@@ -2339,6 +2338,7 @@ function renderOneSixteenChart(currentWeekDraws, activeHighlights) {
           });
           return html + `</tbody></table></div></div>`;
       }
+
       // Main function to render the export table with all charts for a given game
       function renderExportTable(game) {
           const container = document.getElementById(`modalContent-${game}`);
