@@ -2183,8 +2183,10 @@
                   const color = highlightColors[numStr] || "#ffffff";
                   
                   if (isActive) {
-                      return `background: ${color}; color: #000; outline: 2px solid #ff9f0a; z-index: 1; position: relative; font-weight: bold;`;
+                      // Standard flat background, no outlines or glows
+                      return `background: ${color}; color: #000; font-weight: bold; border: 1px solid #333;`;
                   } else if (isMainCell && isHitMain) {
+                      // Hit indicator (Purple) remains flat
                       return `background: #824b8d; color: #fff; font-weight: bold;`;
                   }
                   return "";
@@ -2221,17 +2223,19 @@
               const isHitMain = currentWeekDraws.includes(main);
 
               const getStyle = (num, isMainCell) => {
-                  const numStr = num.toString();
-                  const isActive = activeHighlights.includes(numStr);
-                  const color = highlightColors[numStr] || "#ffffff";
-                  
-                  if (isActive) {
-                      return `background: ${color}; color: #000; outline: 2px solid #ff9f0a; z-index: 1; position: relative; font-weight: bold;`;
-                  } else if (isMainCell && isHitMain) {
-                      return `background: #824b8d; color: #fff; font-weight: bold;`;
-                  }
-                  return "";
-              };
+                    const numStr = num.toString();
+                    const isActive = activeHighlights.includes(numStr);
+                    const color = highlightColors[numStr] || "#ffffff";
+                    
+                    if (isActive) {
+                        // Standard flat background, no outlines or glows
+                        return `background: ${color}; color: #000; font-weight: bold; border: 1px solid #333;`;
+                    } else if (isMainCell && isHitMain) {
+                        // Hit indicator (Purple) remains flat
+                        return `background: #824b8d; color: #fff; font-weight: bold;`;
+                    }
+                    return "";
+                };
 
               html += `<div style="border: 1px solid #999; text-align: center; background: #fff; font-size: 12px;">
                           <div style="padding: 4px; border-bottom: 1px solid #999; font-weight: bold; ${getStyle(main, true)}">${main}</div>
@@ -2267,9 +2271,10 @@
               const isActiveMain = activeHighlights.includes(mainStr);
               
               // Header logic: Show Active Highlight color if active; otherwise use default yellow branding
+              // Header Style (Left Column)
               let headerStyle = "width: 50px; height: 40px; font-weight: bold; border-right: 1px solid #ccc;";
               if (isActiveMain) {
-                  headerStyle += `background: ${highlightColors[mainStr] || '#ff9f0a'}; color: #000; outline: 2px solid #333;`;
+                  headerStyle += `background: ${highlightColors[mainStr]}; color: #000; border: 1.5px solid #000;`;
               } else {
                   headerStyle += "background: #fcdb43; color: #000;";
               }
@@ -2286,9 +2291,12 @@
                   let cellStyle = "width: 50px; border-right: 1px solid #ddd; height: 40px;";
                   
                   // Priority: 1. Active Highlight Color, 2. Current Week Hit (Blue), 3. Default
+                  // Prediction Cells (Right Columns)
                   if (isActiveVal) {
-                      cellStyle += `background: ${highlightColors[valStr] || '#ff9f0a'}; color: #000; font-weight: bold; border: 1px solid #666;`;
+                      // Flat Active Highlight
+                      cellStyle += `background: ${highlightColors[valStr]}; color: #000; font-weight: bold; border: 1px solid #000;`;
                   } else if (isHit && val !== "") {
+                      // Flat Blue Hit
                       cellStyle += "background: #4472c4; color: #fff; font-weight: bold;";
                   }
                   
@@ -2329,8 +2337,13 @@
                   const isHit = num !== "" && currentWeekDraws.includes(num);
                   let cellStyle = "padding: 4px; border-right: 1px solid #ddd; width: 25px;";
                   
-                  if (isActive) cellStyle += `background: ${highlightColors[numStr]}; color: #000; font-weight: bold; outline: 1px solid #333;`;
-                  else if (isHit) cellStyle += "background: #4472c4; color: white; font-weight: bold;";
+                  if (isActive) {
+                      // Flat color coding for easy reading
+                      cellStyle += `background: ${highlightColors[numStr]}; color: #000; font-weight: bold; border: 1px solid #333;`;
+                  } else if (isHit) {
+                      // Standard Flat Blue
+                      cellStyle += "background: #4472c4; color: white; font-weight: bold;";
+                  }
                   
                   html += `<td style="${cellStyle}">${num}</td>`;
               }
@@ -2383,6 +2396,32 @@
           let activeHighlights = [];
           let highlightColors = {};
           let highlightMap = new Map(); // Maps combination keys to colors
+          
+          // GLOBAL POSITION TRACKING (Needed for all games to show "HOLIDAY" vs "—")
+          let currentDayIndex = -1, currentDayName = "", currentSlot = "";
+          
+          // New: Get the actual day of the week from the system (0=Sun, 1=Mon, etc.)
+          const today = new Date();
+          const realDayIdx = today.getDay(); 
+
+          for (let d = dayNames.length - 1; d >= 0; d--) {
+              const day = currentWk.days.find(dy => dy.dayName === dayNames[d]);
+              if (day) {
+                  for (let s = slots.length - 1; s >= 0; s--) {
+                      if (getDraw(currentWk, dayNames[d], slots[s])) {
+                          // Use the LATEST draw found, but don't let it be less than the actual day
+                          currentDayIndex = Math.max(d, realDayIdx); 
+                          currentDayName = dayNames[currentDayIndex]; 
+                          currentSlot = slots[s];
+                          break;
+                      }
+                  }
+              }
+              if (currentDayIndex !== -1) break;
+          }
+          
+          // Safety fallback: if it's Tuesday but NO draws happened this week yet
+          //if (currentDayIndex === -1) currentDayIndex = realDayIdx;
 
           if (game === 'pw') {
               let currentDayIndex = -1, currentDayName = "", currentSlot = "";
@@ -2441,7 +2480,21 @@
                       
                       // Logic for the "Next Day" Morning/Midday
                       if (currentDayIndex < 6) {
-                          const nextDayIdx = currentDayIndex + 1;
+                          let nextDayIdx = currentDayIndex + 1;
+                          const nextDayName = dayNames[nextDayIdx];
+                          
+                          // DYNAMIC CHECK: Is Monday empty (Holiday) in the current week?
+                          const nextDayData = currentWk.days.find(d => d.dayName === nextDayName);
+                          const isNextDayHoliday = !nextDayData || slots.every(s => {
+                              const v = nextDayData.draws[s];
+                              return !v || v === "-" || v === "PENDING";
+                          });
+
+                          // If Monday is a holiday, shift the target for highlightB to Tuesday
+                          if (isNextDayHoliday && nextDayIdx === 1) {
+                              nextDayIdx = 2; 
+                          }
+
                           highlightB = [
                               findDeepDraw(nextDayIdx, "MOR"),
                               findDeepDraw(nextDayIdx, "MID")
@@ -2586,12 +2639,28 @@
               html += "<td style='background:#f8f9fa; font-weight:bold; font-size:10px; border-right:2px solid #ccc;'>" + wk.startDate + "</td>";
               
               dayNames.forEach(dayName => {
+                  
+                  // If the day is empty (No Draws), show HOLIDAY for ALL weeks (Current, P2, P4, PW)
                   const dayData = wk.days.find(d => d.dayName === dayName);
                   const isDayEmpty = !dayData || slots.every(s => !dayData.draws[s] || dayData.draws[s] === "-" || dayData.draws[s] === "PENDING");
                   
-                  if (!isCurrent && isDayEmpty) {
+                  // 1. Identify if the day we are rendering is in the past/today versus the future
+                  const dayIdx = dayNames.indexOf(dayName);
+                  const isPastOrToday = (wkIdx < historyWeeks.length - 1) || (dayIdx < currentDayIndex);
+
+                  // 2. Only show "HOLIDAY" if the day is empty AND it is NOT a future day
+                  if (isDayEmpty && isPastOrToday) {
                       html += "<td colspan='4' style='background:#f1f3f5; color:#ff453a; font-size:11px; border-left:2px solid #ccc; text-align:center; font-weight:bold;'>HOLIDAY</td>";
-                  } else {
+                  } 
+                  // 3. If it's a future day that hasn't happened yet, show the standard dashes
+                  else if (isDayEmpty && !isPastOrToday) {
+                      slots.forEach((slot, sIdx) => {
+                          const borderL = (sIdx === 0) ? "2px solid #ccc" : "1px solid #eee";
+                          html += `<td style='border-left:${borderL}; width:28px; height:30px; text-align:center;'><span style='color:#999;'>—</span></td>`;
+                      });
+                  } 
+                  else {
+                      // 4. Render slots normally for days that HAVE values
                       slots.forEach((slot, sIdx) => {
                           const val = dayData ? dayData.draws[slot] : null;
                           const hasValue = (val && val !== "-" && val !== "PENDING");
