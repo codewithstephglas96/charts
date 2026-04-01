@@ -80,7 +80,7 @@
       }
 
       .game-header {
-        padding: 16px;
+        padding: 9px;
         text-align: center;
         border-bottom: 1px solid var(--border-color);
       }
@@ -555,6 +555,7 @@
           cursor: pointer;
           transition: all 0.3s ease;
           position: relative;
+          overflow: hidden;
       }
 
       .game-header:hover {
@@ -563,8 +564,9 @@
           box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       }
 
-      .game-header.playwhe:hover h2::after {
-          content: "VIEW PLAY WHE DRAWS";
+      /* Generic hover text using data attribute */
+      .game-header:hover::before {
+          content: attr(data-hover-text);
           position: absolute;
           left: 0;
           right: 0;
@@ -572,41 +574,74 @@
           color: white;
           font-size: 20px;
           font-weight: 800;
-          background: red;
+          background: rgba(255, 0, 0, 0.9);
           top: 50%;
           transform: translateY(-50%);
-      }
-
-      .game-header.pick2:hover h2::after {
-          content: "VIEW PICK 2 DRAWS";
-          position: absolute;
-          left: 0;
-          right: 0;
-          text-align: center;
-          color: white;
-          font-size: 20px;
-          font-weight: 800;
-          background: red;
-          top: 50%;
-          transform: translateY(-50%);
-      }
-
-      .game-header.pick4:hover h2::after {
-          content: "VIEW PICK 4 DRAWS";
-          position: absolute;
-          left: 0;
-          right: 0;
-          text-align: center;
-          color: white;
-          font-size: 20px;
-          font-weight: 800;
-          background: red;
-          top: 50%;
-          transform: translateY(-50%);
+          z-index: 10;
+          pointer-events: none;
+          padding: 10px;
       }
 
       .game-header:hover h2 {
           opacity: 0;
+      }
+
+      .game-header.playwhe:hover h2::after {
+          content: "VIEW PLAY WHE CHARTS";
+          position: absolute;
+          left: 0;
+          right: 0;
+          text-align: center;
+          color: white;
+          font-size: 20px;
+          font-weight: 800;
+          background: rgba(255, 0, 0, 0.9);
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          pointer-events: none;
+      }
+
+      .game-header.pick2:hover h2::after {
+          content: "VIEW PICK 2 CHARTS";
+          position: absolute;
+          left: 0;
+          right: 0;
+          text-align: center;
+          color: white;
+          font-size: 20px;
+          font-weight: 800;
+          background: rgba(255, 0, 0, 0.9);
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          pointer-events: none;
+      }
+
+      .game-header.pick4:hover h2::after {
+          content: "VIEW PICK 4 CHARTS";
+          position: absolute;
+          left: 0;
+          right: 0;
+          text-align: center;
+          color: white;
+          font-size: 20px;
+          font-weight: 800;
+          background: rgba(255, 0, 0, 0.9);
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          pointer-events: none;
+      }
+
+      .game-header:hover h2 {
+          opacity: 0;
+      }
+
+      /* Ensure the game-header has proper positioning */
+      .game-header {
+          position: relative;
+          overflow: hidden;
       }
 
       @media (max-width: 768px) {
@@ -845,6 +880,36 @@
           100% { transform: scale(1); }
       }
 
+      /* Loading indicator */
+      .loading-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.8);
+          z-index: 9999;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+      }
+
+      .loading-spinner {
+          width: 50px;
+          height: 50px;
+          border: 5px solid #f3f3f3;
+          border-top: 5px solid #ff9d00;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+      }
+
+      .loading-text {
+          color: white;
+          margin-top: 20px;
+          font-size: 14px;
+      }
+
     </style>
   </head>
   <body>
@@ -855,7 +920,7 @@
     <div class="dashboard-grid" id="dashboardGrid">
       <!-- Play Whe Card -->
       <div class="game-card" id="playwhe-card">
-        <div class="game-header playwhe" style="cursor: pointer;">
+        <div class="game-header playwhe" style="cursor: pointer;" data-hover-text="VIEW PLAY WHE CHARTS">
             <h2>COMING UNDER IN PLAY WHE</h2>
         </div>
         <div class="nav-bar" id="pw-nav">
@@ -908,7 +973,7 @@
 
       <!-- Pick 2 Card -->
       <div class="game-card" id="pick2-card">
-        <div class="game-header pick2" style="cursor: pointer;">
+        <div class="game-header pick2" style="cursor: pointer;" data-hover-text="VIEW PICK 2 CHARTS">
             <h2>COMING UNDER IN PICK 2</h2>
         </div>
         <div class="nav-bar" id="p2-nav">
@@ -961,7 +1026,7 @@
 
       <!-- Pick 4 Card -->
       <div class="game-card" id="pick4-card">
-        <div class="game-header pick4" style="cursor: pointer;">
+        <div class="game-header pick4" style="cursor: pointer;" data-hover-text="VIEW PICK 4 CHARTS">
             <h2>COMING UNDER IN PICK 4</h2>
         </div>
         <div class="nav-bar" id="p4-nav">
@@ -1206,11 +1271,17 @@
 
     <script>
       // ========== CONSTANTS ==========
-      const BASE_API =
-        "https://script.google.com/macros/s/AKfycbwyr-M_ZzIscNgxJmR_UYHgZqmamn62Np4msDFaCjX9KgyUmyjuzuIYbawBmT0_mw4j/exec?action=calendar&weeks=150"; // 12 weeks by default, can be changed by user in the future
-
-      // Ticker
+      const BASE_API = "https://script.google.com/macros/s/AKfycbwyr-M_ZzIscNgxJmR_UYHgZqmamn62Np4msDFaCjX9KgyUmyjuzuIYbawBmT0_mw4j/exec?action=calendar&weeks=150";
       const TICKER_API = "https://script.google.com/macros/s/AKfycbymSUZ3cuBP7wZSKkxs8QmjMkKP6q3j-LOW_CVpY3n6Sw1EzsdwPu6yTEkpOmiAJz95/exec?action=ticker";
+
+      // Cache keys
+      const CACHE_KEYS = {
+        PLAY_WHE: 'cwg_playwhe_cache',
+        PICK_2: 'cwg_pick2_cache',
+        PICK_4: 'cwg_pick4_cache',
+        TIMESTAMP: 'cwg_cache_timestamp'
+      };
+      const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
 
       const GAME_URLS = {
         playwhe: BASE_API + "&game=P2WHE",
@@ -1287,24 +1358,9 @@
 
       // ========== GLOBAL STATE ==========
       const gameState = {
-        playwhe: {
-          weeks: [],
-          currentWeekIndex: 0,
-          currentDay: "",
-          countdownTimers: [],
-        },
-        pick2: {
-          weeks: [],
-          currentWeekIndex: 0,
-          currentDay: "",
-          countdownTimers: [],
-        },
-        pick4: {
-          weeks: [],
-          currentWeekIndex: 0,
-          currentDay: "",
-          countdownTimers: [],
-        },
+        playwhe: { weeks: [], fullWeeks: [], currentWeekIndex: 0, currentDay: "", isLoading: false },
+        pick2: { weeks: [], fullWeeks: [], currentWeekIndex: 0, currentDay: "", isLoading: false },
+        pick4: { weeks: [], fullWeeks: [], currentWeekIndex: 0, currentDay: "", isLoading: false },
       };
 
       // Initialize current day for each game
@@ -1314,43 +1370,203 @@
       gameState.pick2.currentDay = todayName;
       gameState.pick4.currentDay = todayName;
 
-      // ========== DATA LOADING ==========
+      // Loading indicator
+      function showLoading(message = "Loading charts...") {
+        let loader = document.getElementById('loading-overlay');
+        if (!loader) {
+          loader = document.createElement('div');
+          loader.id = 'loading-overlay';
+          loader.className = 'loading-overlay';
+          loader.innerHTML = `
+            <div class="loading-spinner"></div>
+            <div class="loading-text">${message}</div>
+          `;
+          document.body.appendChild(loader);
+        } else {
+          const textEl = loader.querySelector('.loading-text');
+          if (textEl) textEl.textContent = message;
+          loader.style.display = 'flex';
+        }
+      }
+
+      function hideLoading() {
+        const loader = document.getElementById('loading-overlay');
+        if (loader) loader.style.display = 'none';
+      }
+
+      // Add loading CSS if not present
+      if (!document.querySelector('#loading-styles')) {
+        const style = document.createElement('style');
+        style.id = 'loading-styles';
+        style.textContent = `
+          .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+          }
+          .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff9d00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+          .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 14px;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      // ========== CACHE FUNCTIONS ==========
+      function getCachedData(gameKey) {
+        try {
+          const cached = localStorage.getItem(CACHE_KEYS[gameKey]);
+          const timestamp = localStorage.getItem(CACHE_KEYS.TIMESTAMP);
+          
+          if (cached && timestamp && (Date.now() - parseInt(timestamp)) < CACHE_DURATION) {
+            return JSON.parse(cached);
+          }
+        } catch (e) {
+          console.warn("Cache read error:", e);
+        }
+        return null;
+      }
+
+      function setCachedData(gameKey, data) {
+        try {
+          localStorage.setItem(CACHE_KEYS[gameKey], JSON.stringify(data));
+          localStorage.setItem(CACHE_KEYS.TIMESTAMP, Date.now().toString());
+        } catch (e) {
+          console.warn("Cache write error:", e);
+        }
+      }
+
+      // ========== DATA LOADING WITH PROGRESSIVE APPROACH ==========
       async function loadAllGames() {
         try {
-          console.log("Fetching game data...");
-
+          console.log("Loading game data with progressive strategy...");
+          //showLoading("Loading dashboard...");
+          
+          // Load initial 12 weeks for quick display
+          const FAST_API = "https://script.google.com/macros/s/AKfycbwyr-M_ZzIscNgxJmR_UYHgZqmamn62Np4msDFaCjX9KgyUmyjuzuIYbawBmT0_mw4j/exec?action=calendar&weeks=12";
+          
+          // Check cache first for quick display
+          const cachedPlayWhe = getCachedData('PLAY_WHE');
+          const cachedPick2 = getCachedData('PICK_2');
+          const cachedPick4 = getCachedData('PICK_4');
+          
+          if (cachedPlayWhe && cachedPick2 && cachedPick4) {
+            console.log("Using cached data for initial render");
+            gameState.playwhe.fullWeeks = cachedPlayWhe;
+            gameState.pick2.fullWeeks = cachedPick2;
+            gameState.pick4.fullWeeks = cachedPick4;
+            
+            // Use first 8 weeks for display
+            gameState.playwhe.weeks = cachedPlayWhe.slice(0, 8);
+            gameState.pick2.weeks = cachedPick2.slice(0, 8);
+            gameState.pick4.weeks = cachedPick4.slice(0, 8);
+            
+            gameState.playwhe.currentWeekIndex = 0;
+            gameState.pick2.currentWeekIndex = 0;
+            gameState.pick4.currentWeekIndex = 0;
+            
+            renderGame("playwhe");
+            renderGame("pick2");
+            renderGame("pick4");
+            setupActiveDayButtons();
+            hideLoading();
+            
+            // Background refresh if cache is old
+            if (Date.now() - parseInt(localStorage.getItem(CACHE_KEYS.TIMESTAMP) || 0) > CACHE_DURATION / 2) {
+              setTimeout(() => refreshFullData(), 2000);
+            }
+            return;
+          }
+          
+          // No cache - load initial 8 weeks first
           const [pwData, p2Data, p4Data] = await Promise.all([
-            fetch(GAME_URLS.playwhe + "&_t=" + Date.now()).then((r) =>
-              r.json(),
-            ),
-            fetch(GAME_URLS.pick2 + "&_t=" + Date.now()).then((r) => r.json()),
-            fetch(GAME_URLS.pick4 + "&_t=" + Date.now()).then((r) => r.json()),
+            fetch(FAST_API + "&game=P2WHE&_t=" + Date.now()).then(r => r.json()),
+            fetch(FAST_API + "&game=PIKII&_t=" + Date.now()).then(r => r.json()),
+            fetch(FAST_API + "&game=PIKIV&_t=" + Date.now()).then(r => r.json()),
           ]);
-
-          // Process and store weeks - REVERSE so most recent first (index 0 = current week)
+          
           gameState.playwhe.weeks = pwData.data.weeks.reverse();
           gameState.pick2.weeks = p2Data.data.weeks.reverse();
           gameState.pick4.weeks = p4Data.data.weeks.reverse();
-
-          // Find current week index (should be 0 after reverse)
+          
           gameState.playwhe.currentWeekIndex = 0;
           gameState.pick2.currentWeekIndex = 0;
           gameState.pick4.currentWeekIndex = 0;
-
-          // Render all games
+          
           renderGame("playwhe");
           renderGame("pick2");
           renderGame("pick4");
-
-          // Setup active day buttons
           setupActiveDayButtons();
-
-          console.log("All games loaded successfully");
+          hideLoading();
+          
+          // Load full 100+ weeks in background for modal
+          console.log("Loading full data in background...");
+          showLoading("Loading full history for charts...");
+          
+          const [fullPw, fullP2, fullP4] = await Promise.all([
+            fetch(GAME_URLS.playwhe + "&_t=" + Date.now()).then(r => r.json()),
+            fetch(GAME_URLS.pick2 + "&_t=" + Date.now()).then(r => r.json()),
+            fetch(GAME_URLS.pick4 + "&_t=" + Date.now()).then(r => r.json()),
+          ]);
+          
+          gameState.playwhe.fullWeeks = fullPw.data.weeks.reverse();
+          gameState.pick2.fullWeeks = fullP2.data.weeks.reverse();
+          gameState.pick4.fullWeeks = fullP4.data.weeks.reverse();
+          
+          // Cache the full data
+          setCachedData('PLAY_WHE', gameState.playwhe.fullWeeks);
+          setCachedData('PICK_2', gameState.pick2.fullWeeks);
+          setCachedData('PICK_4', gameState.pick4.fullWeeks);
+          
+          console.log("Full data loaded and cached");
+          hideLoading();
+          
         } catch (error) {
           console.error("Error loading games:", error);
+          hideLoading();
           showError("playwhe");
           showError("pick2");
           showError("pick4");
+        }
+      }
+
+      async function refreshFullData() {
+        try {
+          console.log("Refreshing full data in background...");
+          const [fullPw, fullP2, fullP4] = await Promise.all([
+            fetch(GAME_URLS.playwhe + "&_t=" + Date.now()).then(r => r.json()),
+            fetch(GAME_URLS.pick2 + "&_t=" + Date.now()).then(r => r.json()),
+            fetch(GAME_URLS.pick4 + "&_t=" + Date.now()).then(r => r.json()),
+          ]);
+          
+          gameState.playwhe.fullWeeks = fullPw.data.weeks.reverse();
+          gameState.pick2.fullWeeks = fullP2.data.weeks.reverse();
+          gameState.pick4.fullWeeks = fullP4.data.weeks.reverse();
+          
+          setCachedData('PLAY_WHE', gameState.playwhe.fullWeeks);
+          setCachedData('PICK_2', gameState.pick2.fullWeeks);
+          setCachedData('PICK_4', gameState.pick4.fullWeeks);
+          
+          console.log("Full data refreshed");
+        } catch (error) {
+          console.error("Background refresh failed:", error);
         }
       }
 
@@ -1378,6 +1594,22 @@
               closeSubscribeModal();
           }
       });
+
+      function showLoading() {
+        const loader = document.createElement('div');
+        loader.id = 'loading-overlay';
+        loader.className = 'loading-overlay';
+        loader.innerHTML = `
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading charts...</div>
+        `;
+        document.body.appendChild(loader);
+    }
+
+    function hideLoading() {
+        const loader = document.getElementById('loading-overlay');
+        if (loader) loader.remove();
+    }
 
       // ========== RENDERING ==========
       function renderGame(game) {
@@ -1735,12 +1967,9 @@
         const hours = Math.floor(diff / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        if (hours > 0) {
-          return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
-        } else {
-          return `${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
-        }
+        
+        // Match the format used in startCountdownTimers
+        return `${hours.toString().padStart(2, '0')}h:${minutes.toString().padStart(2, '0')}m:${seconds.toString().padStart(2, '0')}s`;
       }
 
       function startCountdownTimers() {
@@ -1999,11 +2228,13 @@
 
       // ========== MODAL FUNCTIONS ==========
       function openHistoryModal(game) {
-          const modal = document.getElementById(`historyModal-${game}`);
-          if (modal) {
-              modal.style.display = 'block';
-              renderExportTable(game);
-          }
+        const modal = document.getElementById(`historyModal-${game}`);
+        if (modal) {
+          modal.style.display = 'block';
+          const container = document.getElementById(`modalContent-${game}`);
+          container.innerHTML = "<div style='text-align:center; padding:40px;'>Loading charts...<div class='loading-spinner' style='margin:20px auto;'></div></div>";
+          renderExportTable(game);
+        }
       }
 
       function closeHistoryModal(game) {
@@ -2354,16 +2585,32 @@
 
       // Main function to render the export table with all charts for a given game
       function renderExportTable(game) {
-          const container = document.getElementById(`modalContent-${game}`);
-          const gameData = gameState[game === 'pw' ? 'playwhe' : game === 'p2' ? 'pick2' : 'pick4'];
-          const weeksData = gameData.weeks;
-          
-          console.log(`Rendering ${game} modal with ${weeksData?.length} weeks`); // Debug log
-          
-          if (!weeksData || weeksData.length === 0) {
-              container.innerHTML = "<div style='color:red; padding:40px; text-align:center;'>⚠️ DATA LINK ERROR</div>";
-              return;
+        const container = document.getElementById(`modalContent-${game}`);
+        const gameData = gameState[game === 'pw' ? 'playwhe' : game === 'p2' ? 'pick2' : 'pick4'];
+        
+        // Use fullWeeks for modal (100+ weeks) if available, otherwise fallback to weeks
+        let weeksData = gameData.fullWeeks && gameData.fullWeeks.length > 0 ? gameData.fullWeeks : gameData.weeks;
+        
+        if (!weeksData || weeksData.length === 0) {
+          container.innerHTML = "<div style='color:red; padding:40px; text-align:center;'>⚠️ Loading data... Please wait</div>";
+          // Try to load full data if not available
+          if (!gameData.fullWeeks || gameData.fullWeeks.length === 0) {
+            showLoading("Loading full history data...");
+            fetch(GAME_URLS[game === 'pw' ? 'playwhe' : game === 'p2' ? 'pick2' : 'pick4'] + "&_t=" + Date.now())
+              .then(r => r.json())
+              .then(data => {
+                gameData.fullWeeks = data.data.weeks.reverse();
+                setCachedData(game === 'pw' ? 'PLAY_WHE' : game === 'p2' ? 'PICK_2' : 'PICK_4', gameData.fullWeeks);
+                hideLoading();
+                renderExportTable(game); // Re-render
+              })
+              .catch(err => {
+                hideLoading();
+                container.innerHTML = "<div style='color:red; padding:40px; text-align:center;'>⚠️ DATA LINK ERROR</div>";
+              });
           }
+          return;
+        }
 
           // Setup Data
           const weeks = [...weeksData].reverse(); // Most recent first
