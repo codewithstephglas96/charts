@@ -2314,9 +2314,29 @@
 
           return html + `</tbody></table></div>`;
       }
-
+      
+      // Frequency Map
+      function getFrequencyMap(draws) {
+          const freq = {};
+          draws.forEach(n => {
+              freq[n] = (freq[n] || 0) + 1;
+          });
+          return freq;
+      }
+      
+      // Heat Map Hit Color
+      function getHitStyle(count) {
+          if (count === 1) return "background: #4472c4; color: white; font-weight: bold;"; // keep original
+          if (count === 2) return "background: yellow; color: black; font-weight: bold;";
+          if (count === 3) return "background: green; color: white; font-weight: bold;";
+          if (count === 4) return "background: orange; color: white; font-weight: bold;";
+          if (count === 5) return "background: pink; color: black; font-weight: bold;";
+          if (count >= 6) return "background: red; color: white; font-weight: bold;";
+          return "";
+      }
+      
       // 2. Lines Played This Week - Each number individually highlighted
-      function renderLinesPlayedChart(currentWeekDraws) {
+      /*function renderLinesPlayedChart(currentWeekDraws) {
           const lineNumbers = {
               1: [1, 10, 19, 28], 2: [2, 11, 20, 29], 3: [3, 12, 21, 30],
               4: [4, 13, 22, 31], 5: [5, 14, 23, 32], 6: [6, 15, 24, 33],
@@ -2349,10 +2369,48 @@
           }
 
           return html + `</table></div>`;
-      }
+      }*/
+function renderLinesPlayedChart(currentWeekDraws) {
+    const freqMap = getFrequencyMap(currentWeekDraws);
+
+    const lineNumbers = {
+        1: [1, 10, 19, 28], 2: [2, 11, 20, 29], 3: [3, 12, 21, 30],
+        4: [4, 13, 22, 31], 5: [5, 14, 23, 32], 6: [6, 15, 24, 33],
+        7: [7, 16, 25, 34], 8: [8, 17, 26, 35], 9: [9, 18, 27, 36]
+    };
+
+    let html = `
+        <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif;">
+            <div style="background: #d9d9d9; padding: 6px; text-align: center; font-weight: bold; font-size: 13px; border-bottom: 1px solid #ccc;">Lines Played This Week</div>
+            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
+                <tr style="background: #f2f2f2; font-weight: bold;">
+                    <td style="border: 1px solid #ddd; padding: 4px;">Line</td>
+                    <td style="border: 1px solid #ddd; padding: 4px;">Ctr</td>
+                    <td colspan="4" style="border: 1px solid #ddd; padding: 4px;">Grid</td>
+                </tr>`;
+
+    for (let i = 1; i <= 9; i++) {
+        const hits = lineNumbers[i].filter(n => freqMap[n]);
+        
+        html += `
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 6px; font-weight: bold;">${i}</td>
+                <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits.length}</td>`;
+
+        lineNumbers[i].forEach(num => {
+            const count = freqMap[num] || 0;
+            const style = getHitStyle(count);
+            html += `<td style="border: 1px solid #ddd; padding: 6px; width: 35px; ${style}">${num}</td>`;
+        });
+
+        html += `</tr>`;
+    }
+
+    return html + `</table></div>`;
+}
 
       // 3. Suites Played This Week - Each number individually highlighted
-      function renderSuitesPlayedChart(currentWeekDraws) {
+      /*function renderSuitesPlayedChart(currentWeekDraws) {
           const suites = {
               0: [10, 20, 30], 1: [1, 11, 21, 31], 2: [2, 12, 22, 32], 3: [3, 13, 23, 33],
               4: [4, 14, 24, 34], 5: [5, 15, 25, 35], 6: [6, 16, 26, 36], 7: [7, 17, 27],
@@ -2386,7 +2444,47 @@
           }
 
           return html + `</table></div>`;
-      }
+      }*/
+function renderSuitesPlayedChart(currentWeekDraws) {
+    const freqMap = getFrequencyMap(currentWeekDraws);
+
+    const suites = {
+        0: [10, 20, 30], 1: [1, 11, 21, 31], 2: [2, 12, 22, 32], 3: [3, 13, 23, 33],
+        4: [4, 14, 24, 34], 5: [5, 15, 25, 35], 6: [6, 16, 26, 36], 7: [7, 17, 27],
+        8: [8, 18, 28], 9: [9, 19, 29]
+    };
+
+    let html = `
+        <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif;">
+            <div style="background: #d9d9d9; padding: 6px; text-align: center; font-weight: bold; font-size: 13px; border-bottom: 1px solid #ccc;">Suits Played This Week</div>
+            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
+                <tr style="background: #f2f2f2; font-weight: bold;">
+                    <td style="border: 1px solid #ddd; padding: 4px;">Suite</td>
+                    <td style="border: 1px solid #ddd; padding: 4px;">Ctr</td>
+                    <td colspan="4" style="border: 1px solid #ddd; padding: 4px;">Grid</td>
+                </tr>`;
+
+    for (let i = 0; i <= 9; i++) {
+        const hits = suites[i].filter(n => freqMap[n]);
+
+        html += `
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 6px; font-weight: bold;">${i}</td>
+                <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits.length}</td>`;
+
+        for (let j = 0; j < 4; j++) {
+            const num = suites[i][j] || "";
+            const count = freqMap[num] || 0;
+            const style = getHitStyle(count);
+
+            html += `<td style="border: 1px solid #ddd; padding: 6px; width: 35px; ${style}">${num}</td>`;
+        }
+
+        html += `</tr>`;
+    }
+
+    return html + `</table></div>`;
+}
 
       // 4. 1/8 Chart - Updated with Active Highlights
       function renderOneEightChart(currentWeekDraws, activeHighlights, highlightColors) {
