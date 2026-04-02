@@ -2397,12 +2397,12 @@ function renderLinesPlayedChart(currentWeekDraws) {
                 </tr>`;
 
     for (let i = 1; i <= 9; i++) {
-        const hits = lineNumbers[i].filter(n => freqMap[n]);
+      const hits = lineNumbers[i].reduce((sum, n) => sum + (freqMap[n] || 0), 0);
         
         html += `
             <tr>
                 <td style="border: 1px solid #ddd; padding: 6px; font-weight: bold;">${i}</td>
-                <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits.length}</td>`;
+                <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits}</td>`;
 
         lineNumbers[i].forEach(num => {
             const count = freqMap[num] || 0;
@@ -2479,12 +2479,12 @@ function renderSuitesPlayedChart(currentWeekDraws) {
                 </tr>`;
 
     for (let i = 0; i <= 9; i++) {
-        const hits = suites[i].filter(n => freqMap[n]);
+      const hits = suites[i].reduce((sum, n) => sum + (freqMap[n] || 0), 0);
 
         html += `
             <tr>
                 <td style="border: 1px solid #ddd; padding: 6px; font-weight: bold;">${i}</td>
-                <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits.length}</td>`;
+                <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits}</td>`;
 
         for (let j = 0; j < 4; j++) {
             const num = suites[i][j] || "";
