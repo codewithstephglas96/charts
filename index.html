@@ -2485,28 +2485,71 @@
               4: [4, 13, 22, 31], 5: [5, 14, 23, 32], 6: [6, 15, 24, 33],
               7: [7, 16, 25, 34], 8: [8, 17, 26, 35], 9: [9, 18, 27, 36]
           };
-
+          
+          // Count frequency of each number (how many times it appears)
+          const frequencyMap = {};
+          currentWeekDraws.forEach(num => {
+              frequencyMap[num] = (frequencyMap[num] || 0) + 1;
+          });
+          
+          // Get background color based on frequency count
+          const getNumberBgColor = (num) => {
+              const count = frequencyMap[num] || 0;
+              if (count >= 4) return '#ff4444';
+              if (count === 3) return '#ffd700';
+              if (count === 2) return '#00ff00';
+              if (count === 1) return '#00ffff';
+              return null; // No background for unplayed
+          };
+          
+          const getTextColor = (bgColor) => {
+              if (!bgColor) return '#000000';
+              if (bgColor === '#ffd700' || bgColor === '#00ff00' || bgColor === '#00ffff') return '#000000';
+              return '#ffffff';
+          };
+          
+          // Calculate Ctr (total occurrences counting duplicates)
+          const getLineCount = (lineNumbersArray) => {
+              let total = 0;
+              lineNumbersArray.forEach(num => {
+                  total += frequencyMap[num] || 0;
+              });
+              return total;
+          };
+          
+          // Get Ctr cell color based on total
+          const getCtrColor = (total) => {
+              if (total >= 4) return { bg: '#ff4444', text: '#ffffff' };
+              if (total === 3) return { bg: '#ffd700', text: '#000000' };
+              if (total === 2) return { bg: '#00ff00', text: '#000000' };
+              if (total === 1) return { bg: '#00ffff', text: '#000000' };
+              return { bg: '#ed7d31', text: '#ffffff' };
+          };
+          
           let html = `
               <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif;">
                   <div style="background: #d9d9d9; padding: 6px; text-align: center; font-weight: bold; font-size: 13px; border-bottom: 1px solid #ccc;">Lines Played This Week</div>
                   <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
                       <tr style="background: #f2f2f2; font-weight: bold;">
                           <td style="border: 1px solid #ddd; padding: 4px;">Line</td>
-                          <td style="border: 1px solid #ddd; padding: 4px;">Ctr</td>
+                          <td style="border: 1px solid #ddd; padding: 4px;">Hits</td>
                           <td colspan="4" style="border: 1px solid #ddd; padding: 4px;">Grid</td>
                       </tr>`;
 
           for (let i = 1; i <= 9; i++) {
-              const hits = lineNumbers[i].filter(n => currentWeekDraws.includes(n));
+              const lineTotal = getLineCount(lineNumbers[i]);
+              const ctrStyle = getCtrColor(lineTotal);
+              
               html += `
                   <tr>
                       <td style="border: 1px solid #ddd; padding: 6px; font-weight: bold;">${i}</td>
-                      <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits.length}</td>`;
+                      <td style="border: 1px solid #ddd; padding: 6px; background: ${ctrStyle.bg}; color: ${ctrStyle.text}; font-weight: bold;">${lineTotal}</td>`;
               
               lineNumbers[i].forEach(num => {
-                  const isHit = currentWeekDraws.includes(num);
-                  const bg = isHit ? "background: #4472c4; color: white; font-weight: bold;" : "";
-                  html += `<td style="border: 1px solid #ddd; padding: 6px; width: 35px; ${bg}">${num}</td>`;
+                  const bgColor = getNumberBgColor(num);
+                  const textColor = getTextColor(bgColor);
+                  const style = bgColor ? `background: ${bgColor}; color: ${textColor}; font-weight: bold;` : '';
+                  html += `<td style="border: 1px solid #ddd; padding: 6px; width: 35px; ${style}">${num}</td>`;
               });
               html += `</tr>`;
           }
@@ -2521,29 +2564,78 @@
               4: [4, 14, 24, 34], 5: [5, 15, 25, 35], 6: [6, 16, 26, 36], 7: [7, 17, 27],
               8: [8, 18, 28], 9: [9, 19, 29]
           };
-
+          
+          // Count frequency of each number (how many times it appears)
+          const frequencyMap = {};
+          currentWeekDraws.forEach(num => {
+              frequencyMap[num] = (frequencyMap[num] || 0) + 1;
+          });
+          
+          // Get background color based on frequency count
+          const getNumberBgColor = (num) => {
+              const count = frequencyMap[num] || 0;
+              if (count >= 4) return '#ff4444';
+              if (count === 3) return '#ffd700';
+              if (count === 2) return '#00ff00';
+              if (count === 1) return '#00ffff';
+              return null; // No background for unplayed
+          };
+          
+          const getTextColor = (bgColor) => {
+              if (!bgColor) return '#000000';
+              if (bgColor === '#ffd700' || bgColor === '#00ff00' || bgColor === '#00ffff') return '#000000';
+              return '#ffffff';
+          };
+          
+          // Calculate Ctr (total occurrences counting duplicates)
+          const getSuiteCount = (suiteNumbers) => {
+              let total = 0;
+              suiteNumbers.forEach(num => {
+                  if (num !== "") {
+                      total += frequencyMap[num] || 0;
+                  }
+              });
+              return total;
+          };
+          
+          // Get Ctr cell color based on total
+          const getCtrColor = (total) => {
+              if (total >= 4) return { bg: '#ff4444', text: '#ffffff' };
+              if (total === 3) return { bg: '#ffd700', text: '#000000' };
+              if (total === 2) return { bg: '#00ff00', text: '#000000' };
+              if (total === 1) return { bg: '#00ffff', text: '#000000' };
+              return { bg: '#ed7d31', text: '#ffffff' };
+          };
+          
           let html = `
               <div style="background: white; border: 1px solid #ccc; font-family: Arial, sans-serif;">
                   <div style="background: #d9d9d9; padding: 6px; text-align: center; font-weight: bold; font-size: 13px; border-bottom: 1px solid #ccc;">Suits Played This Week</div>
                   <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
                       <tr style="background: #f2f2f2; font-weight: bold;">
                           <td style="border: 1px solid #ddd; padding: 4px;">Suite</td>
-                          <td style="border: 1px solid #ddd; padding: 4px;">Ctr</td>
+                          <td style="border: 1px solid #ddd; padding: 4px;">Hits</td>
                           <td colspan="4" style="border: 1px solid #ddd; padding: 4px;">Grid</td>
                       </tr>`;
 
           for (let i = 0; i <= 9; i++) {
-              const hits = suites[i].filter(n => currentWeekDraws.includes(n));
+              const suiteTotal = getSuiteCount(suites[i]);
+              const ctrStyle = getCtrColor(suiteTotal);
+              
               html += `
                   <tr>
                       <td style="border: 1px solid #ddd; padding: 6px; font-weight: bold;">${i}</td>
-                      <td style="border: 1px solid #ddd; padding: 6px; background: #ed7d31; color: white; font-weight: bold;">${hits.length}</td>`;
+                      <td style="border: 1px solid #ddd; padding: 6px; background: ${ctrStyle.bg}; color: ${ctrStyle.text}; font-weight: bold;">${suiteTotal}</td>`;
               
               for (let j = 0; j < 4; j++) {
                   const num = suites[i][j] || "";
-                  const isHit = num !== "" && currentWeekDraws.includes(num);
-                  const bg = isHit ? "background: #4472c4; color: white; font-weight: bold;" : "";
-                  html += `<td style="border: 1px solid #ddd; padding: 6px; width: 35px; ${bg}">${num}</td>`;
+                  if (num === "") {
+                      html += `<td style="border: 1px solid #ddd; padding: 6px; width: 35px;"></td>`;
+                  } else {
+                      const bgColor = getNumberBgColor(parseInt(num));
+                      const textColor = getTextColor(bgColor);
+                      const style = bgColor ? `background: ${bgColor}; color: ${textColor}; font-weight: bold;` : '';
+                      html += `<td style="border: 1px solid #ddd; padding: 6px; width: 35px; ${style}">${num}</td>`;
+                  }
               }
               html += `</tr>`;
           }
